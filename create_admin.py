@@ -3,10 +3,12 @@ from models import User
 
 def create_admin():
     with app.app_context():
-        # Verifica se já existe um admin
-        if User.query.filter_by(username='admin').first():
-            print('Usuário admin já existe!')
-            return
+        # Remove o usuário admin existente se houver
+        existing_admin = User.query.filter_by(username='admin').first()
+        if existing_admin:
+            db.session.delete(existing_admin)
+            db.session.commit()
+            print('Usuário admin existente removido!')
 
         # Cria o usuário admin
         admin = User(

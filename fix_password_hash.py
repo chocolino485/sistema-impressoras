@@ -8,10 +8,8 @@ logger = logging.getLogger(__name__)
 
 def fix_password_hash():
     try:
-        # Obter a URL do banco de dados do ambiente
-        database_url = os.getenv('DATABASE_URL')
-        if not database_url:
-            raise ValueError("DATABASE_URL não encontrada nas variáveis de ambiente")
+        # URL do banco de dados local
+        database_url = "postgresql://postgres:postgres@localhost:5432/sistema_impressoras"
         
         logger.info("Iniciando processo de correção do campo password_hash...")
         

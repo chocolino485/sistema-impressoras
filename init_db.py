@@ -24,11 +24,19 @@ def init_database():
             db.create_all()
             logger.info("Tabelas criadas com sucesso!")
             
-            logger.info("Criando usuário admin...")
-            create_admin()
-            
-            logger.info("Criando usuários de teste...")
-            create_test_users()
+            # Verificar se já existe algum usuário
+            if not User.query.first():
+                logger.info("Nenhum usuário encontrado. Criando usuários iniciais...")
+                
+                logger.info("Criando usuário admin...")
+                create_admin()
+                
+                logger.info("Criando usuários de teste...")
+                create_test_users()
+                
+                logger.info("Usuários iniciais criados com sucesso!")
+            else:
+                logger.info("Usuários já existem no banco de dados. Pulando criação.")
             
             logger.info("Inicialização do banco de dados concluída com sucesso!")
         except Exception as e:

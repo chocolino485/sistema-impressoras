@@ -17,6 +17,9 @@ ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
 ENV PYTHONUNBUFFERED=1
 
+# Inicializar o banco de dados
+RUN python init_db.py
+
 EXPOSE 8000
 
 CMD ["gunicorn", "--config", "gunicorn_config.py", "app:app"] 

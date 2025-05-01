@@ -65,20 +65,12 @@ from models import *
 from routes import *
 logger.info("Modelos e rotas importados com sucesso!")
 
-def init_db():
-    """Inicializa o banco de dados."""
-    logger.info("Tentando criar tabelas do banco de dados...")
-    try:
-        with app.app_context():
-            db.create_all()
-            logger.info("Tabelas criadas com sucesso!")
-    except Exception as e:
-        logger.error(f"Erro ao criar tabelas: {e}")
-        raise
+# Importar função de inicialização do banco de dados
+from init_db import init_database
 
 # Inicializar o banco de dados durante a inicialização do app
 with app.app_context():
-    init_db()
+    init_database()
 
 if __name__ == '__main__':
     logger.info("Iniciando o servidor...")

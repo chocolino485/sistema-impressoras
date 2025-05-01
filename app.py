@@ -45,22 +45,24 @@ from models import *
 from routes import *
 logger.info("Modelos e rotas importados com sucesso!")
 
-@app.before_first_request
-def create_tables():
+def init_db():
+    """Inicializa o banco de dados."""
     logger.info("Tentando criar tabelas do banco de dados...")
     try:
-        db.create_all()
-        logger.info("Tabelas criadas com sucesso!")
+        with app.app_context():
+            db.create_all()
+            logger.info("Tabelas criadas com sucesso!")
     except Exception as e:
         logger.error(f"Erro ao criar tabelas: {e}")
         raise
 
+# Inicializar o banco de dados durante a inicialização do app
+with app.app_context():
+    init_db()
+
 if __name__ == '__main__':
     logger.info("Iniciando o servidor...")
     try:
-        with app.app_context():
-            db.create_all()
-            logger.info("Banco de dados inicializado com sucesso!")
         logger.info(f"Servidor iniciando em http://0.0.0.0:5000")
         app.run(debug=True, host='0.0.0.0', port=5000)
     except Exception as e:

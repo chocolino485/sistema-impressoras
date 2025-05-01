@@ -1,5 +1,8 @@
 FROM python:3.8-slim
 
+# Criar usuário não-root
+RUN useradd -m myuser
+
 WORKDIR /app
 
 # Instalar dependências do sistema
@@ -18,9 +21,12 @@ ENV PYTHONUNBUFFERED=1
 
 # Criar diretório para o banco de dados SQLite e configurar permissões
 RUN mkdir -p instance && \
-    chmod 777 instance && \
-    touch instance/erp.db && \
-    chmod 666 instance/erp.db
+    chown -R myuser:myuser /app && \
+    chmod -R 755 /app && \
+    chmod 777 instance
+
+# Mudar para o usuário não-root
+USER myuser
 
 # Inicializar o banco de dados
 RUN python init_db.py

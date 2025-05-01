@@ -14,33 +14,33 @@ load_dotenv()
 # Configurar o caminho do banco de dados
 basedir = os.path.abspath(os.path.dirname(__file__))
 instance_path = os.path.join(basedir, 'instance')
-db_path = os.path.join(instance_path, 'erp.db')
 
 app = Flask(__name__, instance_path=instance_path)
 
 # Configurações do aplicativo
 logger.info("Configurando variáveis de ambiente...")
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sua-chave-secreta-aqui')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', f'sqlite:///{db_path}')
+
+# Configuração do banco de dados
+if os.getenv('DATABASE_URL'):
+    # Estamos no Render (produção)
+    logger.info("Usando PostgreSQL (ambiente de produção)")
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+else:
+    # Desenvolvimento local
+    logger.info("Usando SQLite (ambiente de desenvolvimento)")
+    db_path = os.path.join(instance_path, 'erp.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+    
+    # Garantir que o diretório instance existe
+    if not os.path.exists(instance_path):
+        logger.info(f"Criando diretório instance em {instance_path}...")
+        os.makedirs(instance_path, exist_ok=True)
+        logger.info("Diretório instance criado com sucesso!")
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 logger.info(f"DATABASE_URL configurada como: {app.config['SQLALCHEMY_DATABASE_URI']}")
-logger.info(f"Caminho absoluto do banco de dados: {db_path}")
-
-# Garantir que o diretório instance existe
-if not os.path.exists(instance_path):
-    logger.info(f"Criando diretório instance em {instance_path}...")
-    os.makedirs(instance_path, exist_ok=True)
-    logger.info("Diretório instance criado com sucesso!")
-
-# Garantir que o arquivo do banco de dados pode ser criado
-try:
-    with open(db_path, 'a'):
-        pass
-    logger.info("Arquivo do banco de dados criado/verificado com sucesso!")
-except Exception as e:
-    logger.error(f"Erro ao tentar criar/verificar arquivo do banco de dados: {e}")
-    raise
 
 # Inicialização das extensões
 logger.info("Inicializando extensões...")

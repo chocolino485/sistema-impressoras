@@ -37,25 +37,8 @@ def fix_password_hash():
         subprocess.run(create_table_cmd, shell=True, check=True)
         logger.info("Tabela user recriada com sucesso!")
         
-        # 3. Criar usuário de suporte
-        logger.info("Criando usuário de suporte...")
-        from werkzeug.security import generate_password_hash
-        password_hash = generate_password_hash('suporte123')
-        insert_user_cmd = f'''psql "{database_url}" -c "
-            INSERT INTO \\"user\\" (username, password_hash, role, name, email, created_at)
-            VALUES (
-                'suporte',
-                '{password_hash}',
-                'suporte',
-                'Usuário Suporte',
-                'suporte@sistema.com',
-                NOW()
-            );"
-        '''
-        subprocess.run(insert_user_cmd, shell=True, check=True)
-        logger.info("Usuário de suporte criado com sucesso!")
-        
         logger.info("Processo de correção concluído com sucesso!")
+        logger.info("Agora você pode criar os usuários através da interface do sistema.")
         
     except Exception as e:
         logger.error(f"Erro durante o processo de correção: {e}")

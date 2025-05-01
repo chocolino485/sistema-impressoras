@@ -22,10 +22,15 @@ logger.info("Configurando variáveis de ambiente...")
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sua-chave-secreta-aqui')
 
 # Configuração do banco de dados
-if os.getenv('DATABASE_URL'):
+database_url = os.getenv('DATABASE_URL')
+if database_url:
     # Estamos no Render (produção)
     logger.info("Usando PostgreSQL (ambiente de produção)")
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    # Garantir que a URL começa com postgresql://
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+    logger.info(f"URL do banco de dados configurada para produção")
 else:
     # Desenvolvimento local
     logger.info("Usando SQLite (ambiente de desenvolvimento)")

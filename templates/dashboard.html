@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="me-2"><i class="bi bi-telephone-inbound fs-3 text-primary"></i></span>
+                        <div>
+                            <h5 class="mb-0">Total de Chamados</h5>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold">{{ total_chamados }}</h2>
+                    <div class="text-success small">
+                        <i class="bi bi-arrow-up"></i> {{ chamados_percent }}% desde o mês passado
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="me-2"><i class="bi bi-check-circle fs-3 text-primary"></i></span>
+                        <div>
+                            <h5 class="mb-0">Chamados Concluídos</h5>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold">{{ chamados_concluidos }}</h2>
+                    <div class="text-success small">
+                        <i class="bi bi-arrow-up"></i> {{ concluidos_percent }}% desde o mês passado
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="me-2"><i class="bi bi-clock-history fs-3 text-primary"></i></span>
+                        <div>
+                            <h5 class="mb-0">Tempo Médio</h5>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold">{{ tempo_medio }} dias</h2>
+                    <div class="text-danger small">
+                        <i class="bi bi-arrow-down"></i> {{ tempo_medio_percent }}% desde o mês passado
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="me-2"><i class="bi bi-currency-dollar fs-3 text-primary"></i></span>
+                        <div>
+                            <h5 class="mb-0">Vendas</h5>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold">R$ {{ vendas_mes }}</h2>
+                    <div class="text-success small">
+                        <i class="bi bi-arrow-up"></i> {{ vendas_percent }}% desde o mês passado
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 text-end mb-3">
+            <a href="{{ url_for('chamados') }}" class="btn btn-primary btn-lg"><i class="bi bi-plus"></i> Novo Chamado</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <h4 class="mb-3">Chamados Recentes <a href="{{ url_for('chamados') }}" class="fs-6 float-end">Ver todos</a></h4>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Equipamento</th>
+                                    <th>Data</th>
+                                    <th>Técnico</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for chamado in chamados %}
+                                <tr>
+                                    <td>#{{ chamado.id }}</td>
+                                    <td>{{ chamado.cliente.nome }}</td>
+                                    <td>{{ chamado.equipamento.marca }} {{ chamado.equipamento.modelo }}</td>
+                                    <td>{{ chamado.created_at.strftime('%d/%m/%Y') }}</td>
+                                    <td>{{ chamado.tecnico.name if chamado.tecnico else '-' }}</td>
+                                    <td>
+                                        {% if chamado.status == 'em_andamento' %}
+                                            <span class="badge bg-info text-dark">Em Progresso</span>
+                                        {% elif chamado.status == 'aberto' %}
+                                            <span class="badge bg-warning text-dark">Pendente</span>
+                                        {% elif chamado.status == 'finalizado' %}
+                                            <span class="badge bg-success">Concluído</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ chamado.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><a href="{{ url_for('chamado', id=chamado.id) }}" class="btn btn-link">Detalhes</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

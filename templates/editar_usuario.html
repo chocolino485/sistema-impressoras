@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Editar Usuário</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-user-edit me-1"></i>
+            Editar Usuário
+        </div>
+        <div class="card-body">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" value="{{ usuario.username }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ usuario.name }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="role" class="form-label">Função</label>
+                    <select class="form-select" id="role" name="role" required>
+                        <option value="tecnico" {% if usuario.role == 'tecnico' %}selected{% endif %}>Técnico</option>
+                        <option value="suporte" {% if usuario.role == 'suporte' %}selected{% endif %}>Suporte</option>
+                        <option value="financeiro" {% if usuario.role == 'financeiro' %}selected{% endif %}>Financeiro</option>
+                        <option value="estoque" {% if usuario.role == 'estoque' %}selected{% endif %}>Estoque</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label">Nova Senha (deixe em branco para manter a atual)</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    <a href="{{ url_for('usuarios') }}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

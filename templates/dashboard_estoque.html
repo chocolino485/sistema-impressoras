@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Estoque{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-1">Entradas no Estoque</h5>
+                    <h2 class="fw-bold">{{ total_entradas }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-1">Saídas do Estoque</h5>
+                    <h2 class="fw-bold">{{ total_saidas }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-1">Saldo Atual</h5>
+                    <h2 class="fw-bold">{{ saldo_atual }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-1">Produtos com Estoque Baixo</h5>
+                    <h2 class="fw-bold text-danger">{{ produtos_baixo }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <h4 class="mb-3">Movimentações Recentes</h4>
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Produto</th>
+                                    <th>Tipo</th>
+                                    <th>Quantidade</th>
+                                    <th>Responsável</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for mov in movimentacoes %}
+                                <tr>
+                                    <td>{{ mov.data.strftime('%d/%m/%Y %H:%M') }}</td>
+                                    <td>{{ mov.produto.nome }}</td>
+                                    <td>
+                                        {% if mov.tipo == 'entrada' %}
+                                            <span class="badge bg-success">Entrada</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Saída</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ mov.quantidade }}</td>
+                                    <td>{{ mov.responsavel }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

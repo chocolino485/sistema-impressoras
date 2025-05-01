@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Equipamentos{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Novo Equipamento</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="marca" class="form-label">Marca</label>
+                            <input type="text" class="form-control" id="marca" name="marca" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modelo" class="form-label">Modelo</label>
+                            <input type="text" class="form-control" id="modelo" name="modelo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="numero_serie" class="form-label">Número de Série</label>
+                            <input type="text" class="form-control" id="numero_serie" name="numero_serie" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="data_recebimento" class="form-label">Data de Recebimento</label>
+                            <input type="date" class="form-control" id="data_recebimento" name="data_recebimento" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="municipio" class="form-label">Município</label>
+                            <input type="text" class="form-control" id="municipio" name="municipio" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cliente</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipo_cliente" id="cliente_existente" value="existente" checked>
+                                <label class="form-check-label" for="cliente_existente">Já cadastrado</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="tipo_cliente" id="cliente_novo" value="novo">
+                                <label class="form-check-label" for="cliente_novo">Novo cliente</label>
+                            </div>
+                            <div id="area_cliente_existente">
+                                <select class="form-select" id="cliente_id" name="cliente_id">
+                                    <option value="">Selecione um cliente</option>
+                                    {% for cliente in clientes %}
+                                    <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="area_cliente_novo" style="display:none;">
+                                <input type="text" class="form-control mb-2" name="novo_cliente_nome" placeholder="Nome do novo cliente">
+                                <input type="text" class="form-control mb-2" name="novo_cliente_telefone" placeholder="Telefone do novo cliente">
+                                <input type="text" class="form-control mb-2" name="novo_cliente_email" placeholder="Email do novo cliente">
+                                <input type="text" class="form-control mb-2" name="novo_cliente_endereco" placeholder="Endereço do novo cliente">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="codigo_equipamento" class="form-label">Código do Equipamento</label>
+                            <input type="text" class="form-control" id="codigo_equipamento" name="codigo_equipamento" value="{{ proximo_codigo }}" readonly>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar Equipamento</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Lista de Equipamentos</h5>
+                    <form class="d-flex" method="GET" action="">
+                        <input class="form-control me-2" type="search" placeholder="Pesquisar por OS ou Nº de Série..." aria-label="Pesquisar" name="q" value="{{ request.args.get('q', '') }}">
+                        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Marca</th>
+                                    <th>Modelo</th>
+                                    <th>Número de Série</th>
+                                    <th>Cliente</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for equipamento in equipamentos %}
+                                <tr>
+                                    <td>{{ equipamento.id }}</td>
+                                    <td>{{ equipamento.marca }}</td>
+                                    <td>{{ equipamento.modelo }}</td>
+                                    <td>{{ equipamento.numero_serie }}</td>
+                                    <td>{{ equipamento.cliente.nome }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const radioExistente = document.getElementById('cliente_existente');
+    const radioNovo = document.getElementById('cliente_novo');
+    const areaExistente = document.getElementById('area_cliente_existente');
+    const areaNovo = document.getElementById('area_cliente_novo');
+    function toggleCliente() {
+        if (radioExistente.checked) {
+            areaExistente.style.display = '';
+            areaNovo.style.display = 'none';
+        } else {
+            areaExistente.style.display = 'none';
+            areaNovo.style.display = '';
+        }
+    }
+    radioExistente.addEventListener('change', toggleCliente);
+    radioNovo.addEventListener('change', toggleCliente);
+});
+</script>
+{% endblock %} 

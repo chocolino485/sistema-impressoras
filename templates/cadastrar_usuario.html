@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastrar Usuário{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Cadastrar Usuário</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-user-plus me-1"></i>
+            Cadastrar Novo Usuário
+        </div>
+        <div class="card-body">
+            {% if mensagem %}
+                <div class="alert alert-info">{{ mensagem }}</div>
+            {% endif %}
+            
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="role" class="form-label">Função</label>
+                    <select class="form-select" id="role" name="role" required>
+                        <option value="tecnico">Técnico</option>
+                        <option value="suporte">Suporte</option>
+                        <option value="financeiro">Financeiro</option>
+                        <option value="estoque">Estoque</option>
+                    </select>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    <a href="{{ url_for('usuarios') }}" class="btn btn-secondary">Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

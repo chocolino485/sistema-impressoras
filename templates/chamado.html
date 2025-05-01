@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Chamado #{{ chamado.id }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Chamado #{{ chamado.id }} - {{ chamado.titulo }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Cliente:</strong> {{ chamado.cliente.nome }}</p>
+                            <p><strong>Equipamento:</strong> {{ chamado.equipamento.marca }} {{ chamado.equipamento.modelo }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Status:</strong> 
+                                <span class="badge {% if chamado.status == 'aberto' %}bg-warning{% elif chamado.status == 'em_andamento' %}bg-info{% else %}bg-success{% endif %}">
+                                    {{ chamado.status }}
+                                </span>
+                            </p>
+                            <p><strong>Data:</strong> {{ chamado.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Descrição</h6>
+                        <p>{{ chamado.descricao }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6>Fotos</h6>
+                        <div class="row">
+                            {% for foto in chamado.fotos %}
+                            <div class="col-md-4 mb-3">
+                                <img src="{{ url_for('static', filename=foto.caminho) }}" class="img-fluid" alt="Foto do chamado">
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="foto" class="form-label">Adicionar Foto</label>
+                            <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar Foto</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Produtos Utilizados</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Quantidade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for produto in chamado.produtos_utilizados %}
+                                <tr>
+                                    <td>{{ produto.produto.nome }}</td>
+                                    <td>{{ produto.quantidade }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -11,46 +11,28 @@ def fix_password_hash():
         try:
             logger.info("Iniciando processo de correção do campo password_hash...")
             
-            # 1. Fazer backup dos usuários existentes
-            users = User.query.all()
-            user_data = []
-            for user in users:
-                user_data.append({
-                    'username': user.username,
-                    'name': user.name,
-                    'email': user.email,
-                    'role': user.role,
-                    'password_hash': user.password_hash,
-                    'created_at': user.created_at
-                })
-            
-            logger.info(f"Backup de {len(user_data)} usuários concluído")
-            
-            # 2. Remover a tabela user
+            # 1. Remover a tabela user
             logger.info("Removendo tabela user...")
             User.__table__.drop(db.engine)
             logger.info("Tabela user removida com sucesso!")
             
-            # 3. Recriar a tabela user
+            # 2. Recriar a tabela user
             logger.info("Recriando tabela user...")
             User.__table__.create(db.engine)
             logger.info("Tabela user recriada com sucesso!")
             
-            # 4. Restaurar os usuários
-            logger.info("Restaurando usuários...")
-            for user_data in user_data:
-                user = User(
-                    username=user_data['username'],
-                    name=user_data['name'],
-                    email=user_data['email'],
-                    role=user_data['role'],
-                    password_hash=user_data['password_hash'],
-                    created_at=user_data['created_at']
-                )
-                db.session.add(user)
-            
+            # 3. Criar usuário de suporte
+            logger.info("Criando usuário de suporte...")
+            admin = User(
+                username='suporte',
+                name='Usuário Suporte',
+                email='suporte@sistema.com',
+                role='suporte'
+            )
+            admin.set_password('suporte123')  # Senha inicial
+            db.session.add(admin)
             db.session.commit()
-            logger.info("Usuários restaurados com sucesso!")
+            logger.info("Usuário de suporte criado com sucesso!")
             
             logger.info("Processo de correção concluído com sucesso!")
             
